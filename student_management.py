@@ -1,53 +1,66 @@
 import mysql.connector
 
-# Database connection
+# Connect to MySQL database
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="your_password",
-    database="student_db"
+    password="your_password",   # Replace with your MySQL password
+    database="student_management"
 )
 
 cursor = conn.cursor()
 
+# Function to add a student
 def add_student():
     name = input("Enter name: ")
-    dept = input("Enter department: ")
-    year = int(input("Enter year: "))
-    email = input("Enter email: ")
+    age = int(input("Enter age: "))
+    course = input("Enter course: ")
 
-    query = "INSERT INTO students (name, department, year, email) VALUES (%s, %s, %s, %s)"
-    cursor.execute(query, (name, dept, year, email))
+    query = "INSERT INTO students (name, age, course) VALUES (%s, %s, %s)"
+    cursor.execute(query, (name, age, course))
     conn.commit()
-    print("Student added successfully")
+    print("Student added successfully.")
 
-
+# Function to view all students
 def view_students():
     cursor.execute("SELECT * FROM students")
-    for row in cursor.fetchall():
-        print(row)
+    rows = cursor.fetchall()
+    if rows:
+        print("\nID | Name | Age | Course | Created At")
+        print("-" * 50)
+        for row in rows:
+            print(row)
+    else:
+        print("No students found.")
 
-
+# Function to update a student's course
 def update_student():
     sid = int(input("Enter student ID to update: "))
-    email = input("Enter new email: ")
+    new_course = input("Enter new course: ")
 
-    query = "UPDATE students SET email=%s WHERE id=%s"
-    cursor.execute(query, (email, sid))
+    query = "UPDATE students SET course=%s WHERE id=%s"
+    cursor.execute(query, (new_course, sid))
     conn.commit()
-    print("Student updated successfully")
+    print("Student updated successfully.")
 
-
+# Function to delete a student
 def delete_student():
     sid = int(input("Enter student ID to delete: "))
+
     query = "DELETE FROM students WHERE id=%s"
     cursor.execute(query, (sid,))
     conn.commit()
-    print("Student deleted successfully")
+    print("Student deleted successfully.")
 
-
+# Main menu loop
 while True:
-    print("\n1. Add Student\n2. View Students\n3. Update Student\n4. Delete Student\n5. Exit")
+    print("\n--- Student Management Menu ---")
+    print("1. Add Student")
+    print("2. View Students")
+    print("3. Update Student")
+    print("4. Delete Student")
+    print("5. Exit")
+
     choice = input("Enter choice: ")
 
     if choice == '1':
@@ -61,6 +74,7 @@ while True:
     elif choice == '5':
         break
     else:
-        print("Invalid choice")
+        print("Invalid choice. Try again.")
 
+# Close the connection
 conn.close()

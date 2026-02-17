@@ -43,6 +43,32 @@ def update_student():
     conn.commit()
     print("Student updated successfully.")
 
+def count_students_per_course():
+    """Count how many students in each course"""
+    query = "SELECT course, COUNT(*) as total_students FROM students GROUP BY course"
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    if rows:
+        print("\nCourse | Total Students")
+        print("-" * 30)
+        for row in rows:
+            print(f"{row[0]} | {row[1]}")
+    else:
+        print("No students found.")
+
+def average_age_per_course():
+    """Calculate average age per course"""
+    query = "SELECT course, AVG(age) as avg_age FROM students GROUP BY course"
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    if rows:
+        print("\nCourse | Average Age")
+        print("-" * 30)
+        for row in rows:
+            print(f"{row[0]} | {row[1]:.2f}")
+    else:
+        print("No students found.")
+
 # Function to delete a student
 def delete_student():
     sid = int(input("Enter student ID to delete: "))
@@ -59,7 +85,9 @@ while True:
     print("2. View Students")
     print("3. Update Student")
     print("4. Delete Student")
-    print("5. Exit")
+    print("5. Count Students per Course(Aggregate)")
+    print("6. Average Age per Course (Aggregate)")
+    print("7. Exit")
 
     choice = input("Enter choice: ")
 
@@ -72,6 +100,10 @@ while True:
     elif choice == '4':
         delete_student()
     elif choice == '5':
+        count_students_per_course()
+    elif choice == '6':
+        average_age_per_course()
+    elif choice == '7':
         break
     else:
         print("Invalid choice. Try again.")
